@@ -18,6 +18,7 @@ const patientRoutes = require('./routes/patients');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+let initPromise;
 
 app.use(cors());
 app.use(helmet({
@@ -53,11 +54,22 @@ async function connectDB() {
   const configuredMongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/hospital-booking';
 
   try {
+    if (
+      process.env.VERCEL &&
+      /127\.0\.0\.1|localhost/.test(configuredMongoUri)
+    ) {
+      throw new Error('Vercel cannot connect to localhost MongoDB. Set MONGODB_URI to a cloud MongoDB connection string.');
+    }
+
+    if (mongoose.connection.readyState === 1) {
+      return;
+    }
+
     await mongoose.connect(configuredMongoUri);
     console.log(`MongoDB connected (${configuredMongoUri})`);
   } catch (err) {
     console.error('MongoDB connection error:', err);
-    process.exit(1);
+    throw err;
   }
 }
 
@@ -178,12 +190,22 @@ app.get('/admin.html', (req, res) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 async function startServer() {
-  await connectDB();
-  await populateSampleDataOnStartup();
+  await initializeApp();
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+}
+
+async function initializeApp() {
+  if (!initPromise) {
+    initPromise = (async () => {
+      await connectDB();
+      await populateSampleDataOnStartup();
+    })();
+  }
+
+  return initPromise;
 }
 
 process.on('SIGINT', async () => {
@@ -192,4 +214,14 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-startServer();
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error('Server startup failed:', error);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  app,
+  initializeApp
+};
