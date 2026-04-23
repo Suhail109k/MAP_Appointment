@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Hospital System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --info-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --danger-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.05)"/><circle cx="60" cy="10" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="10" cy="70" r="2.5" fill="rgba(255,255,255,0.06)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(120deg); }
+            66% { transform: translateY(5px) rotate(240deg); }
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            animation: floating 15s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .shape:nth-child(4) {
+            width: 70px;
+            height: 70px;
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 6s;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        .hero {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: rotate 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 {
+            background: linear-gradient(45deg, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.05); }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .stats-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        .stats-card .display-4 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: countUp 2s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .btn {
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--info-gradient);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-light {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .btn-light:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .admin-meta {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .table {
+            border-radius: 15px;
+            overflow: hidden;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+        }
+
+        .table thead th {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 1rem;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.01);
+        }
+
+        .badge {
+            font-size: 0.8em;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .list-group-item {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .list-group-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .card-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .animate-bounce-in {
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .alert {
+            border-radius: 15px;
+            border: none;
+            backdrop-filter: blur(10px);
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .stats-card .display-4 {
+                font-size: 2rem;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container-fluid py-5">
+        <div class="hero text-center text-white animate-fade-in">
+            <h1 class="display-4"><i class="fas fa-cog pulse"></i> Admin Dashboard</h1>
+            <p class="admin-meta" id="adminSessionInfo">Protected hospital administration access</p>
+            <p class="lead">Manage all hospital data and appointments with real-time insights</p>
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <a href="/" class="btn btn-light">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <button id="logoutButton" class="btn btn-light" type="button">
+                    <i class="fas fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card animate-bounce-in">
+                    <div class="card-body">
+                        <i class="fas fa-user-md text-primary"></i>
+                        <div class="display-4" id="doctorsCount">0</div>
+                        <h6 class="text-muted">Total Doctors</h6>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar bg-primary" id="doctorsProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card animate-bounce-in" style="animation-delay: 0.1s;">
+                    <div class="card-body">
+                        <i class="fas fa-users text-success"></i>
+                        <div class="display-4" id="patientsCount">0</div>
+                        <h6 class="text-muted">Total Patients</h6>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar bg-success" id="patientsProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card animate-bounce-in" style="animation-delay: 0.2s;">
+                    <div class="card-body">
+                        <i class="fas fa-calendar-check text-info"></i>
+                        <div class="display-4" id="appointmentsCount">0</div>
+                        <h6 class="text-muted">Total Appointments</h6>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar bg-info" id="appointmentsProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card animate-bounce-in" style="animation-delay: 0.3s;">
+                    <div class="card-body">
+                        <i class="fas fa-clock text-warning"></i>
+                        <div class="display-4" id="pendingCount">0</div>
+                        <h6 class="text-muted">Pending Appointments</h6>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar bg-warning" id="pendingProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Appointments Table -->
+            <div class="col-lg-8">
+                <div class="card animate-slide-up">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-list"></i> All Appointments</h5>
+                        <button id="refreshAppointments" class="btn btn-light btn-sm">
+                            <i class="fas fa-sync"></i> <span id="refreshText">Refresh</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Doctor</th>
+                                        <th>Date & Time</th>
+                                        <th>Reason</th>
+                                        <th>Problem</th>
+                                        <th>Medicine</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appointmentsTable">
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4">
+                                            <div class="loading-spinner mx-auto"></div>
+                                            <p class="mt-2 text-muted">Loading appointments...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patients & Doctors List -->
+            <div class="col-lg-4">
+                <div class="row g-4">
+                    <!-- Patients -->
+                    <div class="col-12">
+                        <div class="card animate-slide-up" style="animation-delay: 0.2s;">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-users"></i> Recent Patients</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="patientsList" class="list-group list-group-flush">
+                                    <div class="text-center py-3">
+                                        <div class="loading-spinner mx-auto"></div>
+                                        <p class="mt-2 text-muted">Loading patients...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Doctors -->
+                    <div class="col-12">
+                        <div class="card animate-slide-up" style="animation-delay: 0.3s;">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-user-md"></i> All Doctors</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="doctorsList" class="list-group list-group-flush">
+                                    <div class="text-center py-3">
+                                        <div class="loading-spinner mx-auto"></div>
+                                        <p class="mt-2 text-muted">Loading doctors...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Alert -->
+        <div id="results" class="mt-4 animate-fade-in" style="display: none;"></div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

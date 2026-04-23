@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cauvery Hospital | Secure Sign In</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #15344b;
+            --teal: #1b7f8b;
+            --mint: #dff6f3;
+            --coral: #ff7a59;
+            --cream: #f8fbfd;
+            --panel: rgba(255, 255, 255, 0.88);
+            --shadow: 0 30px 60px rgba(21, 52, 75, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255, 255, 255, 0.5), transparent 30%),
+                linear-gradient(135deg, #e1f4ff 0%, #f5fbff 45%, #dff6f3 100%);
+            color: var(--navy);
+        }
+
+        .page-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 32px 0;
+        }
+
+        .brand-panel,
+        .login-panel {
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .brand-panel {
+            background:
+                linear-gradient(160deg, rgba(21, 52, 75, 0.95), rgba(27, 127, 139, 0.9)),
+                var(--navy);
+            color: white;
+            position: relative;
+            padding: 40px;
+        }
+
+        .brand-panel::before,
+        .brand-panel::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-panel::before {
+            width: 220px;
+            height: 220px;
+            top: -70px;
+            right: -40px;
+        }
+
+        .brand-panel::after {
+            width: 180px;
+            height: 180px;
+            bottom: -60px;
+            left: -30px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: clamp(2.4rem, 4vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 18px;
+        }
+
+        .brand-copy {
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 1.05rem;
+            max-width: 520px;
+            margin-bottom: 32px;
+        }
+
+        .feature-strip {
+            display: grid;
+            gap: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+        }
+
+        .feature-item i {
+            font-size: 1.2rem;
+            color: #9ef0e8;
+            margin-top: 4px;
+        }
+
+        .login-panel {
+            background: var(--panel);
+            backdrop-filter: blur(18px);
+            padding: 34px;
+        }
+
+        .login-panel h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-panel p {
+            color: #557180;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 24px 0;
+        }
+
+        .role-option {
+            border: 2px solid #d9e6ec;
+            border-radius: 20px;
+            padding: 18px 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .role-option.active {
+            border-color: var(--teal);
+            background: #f1fbfc;
+            transform: translateY(-2px);
+        }
+
+        .role-option i {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--teal);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .form-control {
+            border-radius: 14px;
+            padding: 13px 14px;
+            border: 1px solid #cddbe3;
+        }
+
+        .form-control:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 0.2rem rgba(27, 127, 139, 0.15);
+        }
+
+        .btn-signin {
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, var(--navy), var(--teal));
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 16px 30px rgba(21, 52, 75, 0.18);
+        }
+
+        .auth-mode-switch {
+            display: inline-flex;
+            gap: 8px;
+            padding: 6px;
+            border-radius: 16px;
+            background: #eef5f8;
+            margin-bottom: 18px;
+        }
+
+        .auth-mode-btn {
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #557180;
+            font-weight: 600;
+        }
+
+        .auth-mode-btn.active {
+            background: white;
+            color: var(--navy);
+            box-shadow: 0 8px 18px rgba(21, 52, 75, 0.08);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .quick-note {
+            margin-top: 20px;
+            border-radius: 18px;
+            padding: 16px 18px;
+            background: var(--mint);
+            color: #23515a;
+        }
+
+        .results-box {
+            display: none;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 991px) {
+            .brand-panel,
+            .login-panel {
+                border-radius: 24px;
+            }
+
+            .role-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-shell">
+        <div class="row g-4 w-100 align-items-stretch">
+            <div class="col-lg-7">
+                <section class="brand-panel h-100">
+                    <div class="brand-badge">
+                        <i class="fas fa-shield-heart"></i>
+                        Secure digital care access
+                    </div>
+                    <h2 class="brand-title">KIOT Hospital</h2>
+                    <p class="brand-copy">
+                        Sign in to book appointments, follow appointment status updates, and manage the hospital workflow through a cleaner and more secure experience.
+                    </p>
+                    <div class="feature-strip">
+                        <div class="feature-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div>
+                                <strong>Patients can book quickly</strong>
+                                <div>Choose a doctor, reserve a slot, and track whether an appointment stays booked, completed, or cancelled.</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-user-lock"></i>
+                            <div>
+                                <strong>Admin access is restricted</strong>
+                                <div>Only the approved admin email and password can open the dashboard and update hospital records.</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-notes-medical"></i>
+                            <div>
+                                <strong>Status and medicine tracking</strong>
+                                <div>Completed appointments can include the medicine given, and that detail remains visible from the admin view.</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-5">
+                <section class="login-panel h-100">
+                    <h1>Sign in</h1>
+                    <p id="authSubtitle">Choose your role, then continue with email and password.</p>
+
+                    <div class="auth-mode-switch" id="authModeSwitch">
+                        <button class="auth-mode-btn active" type="button" data-mode="login">Sign In</button>
+                        <button class="auth-mode-btn" type="button" data-mode="register">Create Account</button>
+                    </div>
+
+                    <form id="loginForm" method="post" action="/api/login">
+                        <div class="role-grid" id="roleOptions">
+                            <button class="role-option active" type="button" data-role="user">
+                                <i class="fas fa-user"></i>
+                                <div class="fw-semibold">Patient Login</div>
+                                <small class="text-muted">Book and check appointment status</small>
+                            </button>
+                            <button class="role-option" type="button" data-role="admin">
+                                <i class="fas fa-user-shield"></i>
+                                <div class="fw-semibold">Admin Login</div>
+                                <small class="text-muted">Open the protected dashboard</small>
+                            </button>
+                        </div>
+
+                        <div class="mb-3 hidden" id="nameGroup">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input class="form-control" id="name" type="text" placeholder="Enter your full name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="email">Email</label>
+                            <input class="form-control" id="email" type="email" required placeholder="Enter your email">
+                        </div>
+
+                        <div class="mb-3 hidden" id="phoneGroup">
+                            <label class="form-label" for="phone">Phone</label>
+                            <input class="form-control" id="phone" type="text" placeholder="Enter your phone number">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="password">Password</label>
+                            <input class="form-control" id="password" type="text" required placeholder="Enter your password">
+                        </div>
+
+                        <button class="btn-signin" id="signInButton" type="submit">
+                            <i class="fas fa-arrow-right-to-bracket"></i> Continue Securely
+                        </button>
+                    </form>
+
+                    <div class="quick-note" id="roleHint">
+                        First-time patients can create an account here, and returning patients can sign in later with the same credentials.
+                    </div>
+
+                    <div id="results" class="results-box"></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/index.js?v=20260423-2"></script>
+</body>
+</html>
